@@ -2,6 +2,8 @@ import './registerPage.css';
 import LayoutPage from '../../../layoutPage';
 import { UserType } from '../../../types/userTypes';
 import { useState } from 'react';
+import InputComponent from '../../../components/inputComponent/inputComponent';
+import SubmitComponent from '../../../components/submitComponent/submitComponent';
 
 export function getFormInputValueByName(form: HTMLFormElement, name: string): string {
     const control = form.elements.namedItem(name) as HTMLInputElement;
@@ -47,21 +49,21 @@ const RegisterPage = () => {
       }
 
     return (
-        <LayoutPage title='Login'>
+        <LayoutPage title='Register'>
             <form onSubmit={handleSubmit}>
                <div>
                  <label htmlFor="name">Введіть ім'я користувача:</label>
-                 <input name="name" id="name" type="text" minLength={2} onChange={handleChange} value={userData.name}></input>
+                 <InputComponent name="name" id="name" type="text" minLength={2} onChange={handleChange} value={userData.name} />
                </div>
                <div>
                  <label htmlFor="email">Введіть ваш email:</label>
-                 <input name="email" id="email" type="email" placeholder='example@gmail.com' onChange={handleChange} value={userData.email}></input>
+                 <InputComponent name="email" id="email" type="email" placeholder='example@gmail.com' onChange={handleChange} value={userData.email} />
                </div>
                <div>
                  <label htmlFor="password">Введіть ваш пароль:</label>
-                 <input name="password" id="password" type="password" minLength={8} maxLength={16} onChange={handleChange} value={userData.password}></input>
+                 <InputComponent name="password" id="password" type="password" minLength={8} maxLength={16} onChange={handleChange} value={userData.password}/>
                </div>        
-               <button type="submit">Відправити</button>
+               <SubmitComponent />
             </form>
         </LayoutPage>
     )
