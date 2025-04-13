@@ -4,6 +4,7 @@ import { UserType } from '../../../types/userTypes';
 import { useState } from 'react';
 import InputComponent from '../../../components/inputComponent/inputComponent';
 import SubmitComponent from '../../../components/submitComponent/submitComponent';
+import { usePersistedState } from '../../../hooks/usepersistedState';
 
 export function getFormInputValueByName(form: HTMLFormElement, name: string): string {
     const control = form.elements.namedItem(name) as HTMLInputElement;
@@ -14,8 +15,8 @@ export function getFormInputValueByName(form: HTMLFormElement, name: string): st
 } 
 
 const RegisterPage = () => {
-    const [users, setUsers] = useState<UserType[]>([])
-    const [userData, setUserData] = useState<UserType>({
+    const [users, setUsers] = usePersistedState<UserType[]>('registeredUsers', [])
+    const [userData, setUserData] = usePersistedState<UserType>('registeredUser', {
         id: 0,
         name: '',
         email: '',
@@ -31,10 +32,10 @@ const RegisterPage = () => {
       }
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) =>{
-        event.preventDefault();
-        const userName:string = getFormInputValueByName(event.currentTarget, "name");
-        const email:string = getFormInputValueByName(event.currentTarget, "email");
-        const password:string = getFormInputValueByName(event.currentTarget, "password");
+        event.preventDefault()
+        const userName:string = getFormInputValueByName(event.currentTarget, "name")
+        const email:string = getFormInputValueByName(event.currentTarget, "email")
+        const password:string = getFormInputValueByName(event.currentTarget, "password")
     
         const newUser: UserType = {
           id: users.length + 1,
@@ -43,9 +44,9 @@ const RegisterPage = () => {
           password: password,
           categories: []
         }
-        setUsers([...users, newUser])
+        setUsers([newUser])
         
-        console.log(newUser);
+        console.log(newUser)
       }
 
     return (
