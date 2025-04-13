@@ -1,0 +1,12 @@
+.delete-button{
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    width: 40px;
+    height: 25px;
+    background: #a02424;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+}

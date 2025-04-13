@@ -1,8 +1,8 @@
 import './submitComponent.css';
 
-const SubmitComponent = () => {
+const SubmitComponent = ({type, onClick}: {type?: 'button' | 'submit' | 'reset', onClick?: React.MouseEventHandler<HTMLButtonElement>}) => {
     return (
-        <button type='submit' className='submitButton'>Submit</button>
+        <button type={type} className='submitButton' onClick={onClick}>Submit</button>
     )
 }
 

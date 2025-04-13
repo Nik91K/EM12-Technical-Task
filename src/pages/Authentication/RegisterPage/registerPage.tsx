@@ -1,7 +1,6 @@
 import './registerPage.css';
 import LayoutPage from '../../../layoutPage';
 import { UserType } from '../../../types/userTypes';
-import { useState } from 'react';
 import InputComponent from '../../../components/inputComponent/inputComponent';
 import SubmitComponent from '../../../components/submitComponent/submitComponent';
 import { usePersistedState } from '../../../hooks/usepersistedState';
@@ -36,35 +35,39 @@ const RegisterPage = () => {
         const userName:string = getFormInputValueByName(event.currentTarget, "name")
         const email:string = getFormInputValueByName(event.currentTarget, "email")
         const password:string = getFormInputValueByName(event.currentTarget, "password")
-    
-        const newUser: UserType = {
-          id: users.length + 1,
-          name: userName,
-          email: email,
-          password: password,
-          categories: []
+
+        if (!email || !password) {
+          console.log('Заповніть всі поля');
+        } else {
+          const newUser: UserType = {
+            id: users.length + 1,
+            name: userName,
+            email: email,
+            password: password,
+            categories: []
+          }
+          setUsers([newUser])
+          
+          console.log(newUser)
         }
-        setUsers([newUser])
-        
-        console.log(newUser)
       }
 
     return (
         <LayoutPage title='Register'>
             <form onSubmit={handleSubmit}>
-               <div>
+               <div className='login-page'>
                  <label htmlFor="name">Введіть ім'я користувача:</label>
                  <InputComponent name="name" id="name" type="text" minLength={2} onChange={handleChange} value={userData.name} />
                </div>
-               <div>
+               <div className='login-page'>
                  <label htmlFor="email">Введіть ваш email:</label>
                  <InputComponent name="email" id="email" type="email" placeholder='example@gmail.com' onChange={handleChange} value={userData.email} />
                </div>
-               <div>
+               <div className='login-page'>
                  <label htmlFor="password">Введіть ваш пароль:</label>
                  <InputComponent name="password" id="password" type="password" minLength={8} maxLength={16} onChange={handleChange} value={userData.password}/>
                </div>        
-               <SubmitComponent />
+               <SubmitComponent type='submit'/>
             </form>
         </LayoutPage>
     )

@@ -35,15 +35,15 @@ const LoginPage = () => {
     return (
         <LayoutPage title='login'>
             <form onSubmit={handleSubmit}>
-               <div>
+               <div className='login-page'>
                  <label htmlFor="email">Введіть ваш email:</label>
                  <InputComponent name="email" id="email" type="email" placeholder='example@gmail.com'/>
                </div>
-               <div>
+               <div className='login-page'>
                  <label htmlFor="password">Введіть ваш пароль:</label>
                  <InputComponent name="password" id="password" type="password" minLength={8} maxLength={16}/>
                </div>        
-               <SubmitComponent />
+               <SubmitComponent type='submit'/>
             </form>
         </LayoutPage>
     )
