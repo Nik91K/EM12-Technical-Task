@@ -23,9 +23,9 @@ const CategoryForm = () => {
         setText("")
     }
     return (
-        <div className="category-form">
+        <div  className='main-category-form'>
             <h2>New Category</h2>
-            <form>
+            <form className='category-form' onSubmit={(e) => e.preventDefault()}>
                 <label htmlFor="category-name">Category Name:</label>
                 <InputComponent type='text' 
                 name='CategoryName' 
@@ -33,9 +33,9 @@ const CategoryForm = () => {
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 />
-                <SubmitComponent type='button' onClick={handleClick}/>
-                <CategoryList categories={categories} setCategories={setCategories}/>
+                <SubmitComponent type='submit' onClick={handleClick}/>
             </form>
+            <CategoryList categories={categories} setCategories={setCategories}/>
         </div>
     )
 }

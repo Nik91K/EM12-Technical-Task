@@ -8,7 +8,7 @@ const CategoryList = ({ categories, setCategories }: {categories: Category[], se
         setCategories(categories.filter((t) => t.id !== taskId))
     }
     return (
-        <div>
+        <div className='category-list-main'>
             <h2>Category List</h2>
             {categories.map((category) => (
                 <div className='category-list'>

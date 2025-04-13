@@ -1,0 +1,11 @@
+.main-category-form{
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.category-form{
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+    gap: 20px;
+}

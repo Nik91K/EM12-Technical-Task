@@ -1,3 +1,10 @@
+.category-list-main{
+    padding: 5px 20px;
+}
+
 .category-list{
     display: flex;
+    justify-content: space-between;
+    margin-left: 5px;
+    width: 200px;
 }
