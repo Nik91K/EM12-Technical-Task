@@ -5,9 +5,11 @@ import SubmitComponent from '../../../components/submitComponent/submitComponent
 import { usePersistedState } from '../../../hooks/usepersistedState';
 import { UserType } from '../../../types/userTypes';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 
 const LoginPage = () => {
+  const navigate = useNavigate()
     const [registeredUser] = usePersistedState<UserType>('registeredUser', {
         id: 0,
         name: '',
@@ -23,6 +25,7 @@ const LoginPage = () => {
 
       if (email === registeredUser.email && password === registeredUser.password) {
         console.log('Вхід');
+        navigate('/transactions');
       } else {
         console.log('Невірний email або пароль');
       }

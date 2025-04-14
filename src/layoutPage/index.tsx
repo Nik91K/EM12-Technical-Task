@@ -5,7 +5,7 @@ import FooterMain from '../components/footerComponent/footerMain'
 const LayoutPage = ({title, children} : {title: string, children:React.ReactNode}) =>{
     return (
         <div className="wrapper">
-            <HeaderMain />
+            <HeaderMain userName='User' />
             <main className='layout-main'>
                 <div className='layout-container'>
                     <h2 className='layout-h2'>{title}</h2>

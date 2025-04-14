@@ -1,9 +1,10 @@
 import './headerMain.css';
+import GreetingsComponent from './greetingsComponent/greetingsComponent';
 
-const HeaderMain = () => {
+const HeaderMain = (props:{userName: string}) => {
     return (
         <header className="headerMain">
-            <h2>Header</h2>
+            <h2>{GreetingsComponent()}, {props.userName}!</h2>
         </header>
     )
 }
