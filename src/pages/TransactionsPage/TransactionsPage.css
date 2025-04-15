@@ -1,0 +1,7 @@
+.category-page{
+    display: flex;
+}
+
+.transaction-page{
+    display: grid;
+}

@@ -4,10 +4,12 @@ import InputComponent from '../../../../components/inputComponent/inputComponent
 import { Category } from '../../../../types/categoryTypes'
 import { useState } from 'react'
 import CategoryList from '../CategoryList/CategoryList'
+import { usePersistedState } from '../../../../hooks/usepersistedState'
+
 
 const CategoryForm = () => {
     const [text, setText] = useState("");
-    const [categories, setCategories] = useState<Category[]>([])
+    const [categories, setCategories] = usePersistedState<Category[]>('categories', [])
     const handleClick = () => {
         if (text.trim() === "") return;
 
