@@ -4,6 +4,7 @@ import { UserType } from '../../../types/userTypes';
 import InputComponent from '../../../components/inputComponent/inputComponent';
 import SubmitComponent from '../../../components/submitComponent/submitComponent';
 import { usePersistedState } from '../../../hooks/usepersistedState';
+import { useNavigate } from 'react-router-dom';
 
 export function getFormInputValueByName(form: HTMLFormElement, name: string): string {
     const control = form.elements.namedItem(name) as HTMLInputElement;
@@ -14,6 +15,7 @@ export function getFormInputValueByName(form: HTMLFormElement, name: string): st
 } 
 
 const RegisterPage = () => {
+    const navigate = useNavigate()
     const [users, setUsers] = usePersistedState<UserType[]>('registeredUsers', [])
     const [userData, setUserData] = usePersistedState<UserType>('registeredUser', {
         id: 0,
@@ -35,6 +37,13 @@ const RegisterPage = () => {
         const userName:string = getFormInputValueByName(event.currentTarget, "name")
         const email:string = getFormInputValueByName(event.currentTarget, "email")
         const password:string = getFormInputValueByName(event.currentTarget, "password")
+        if (!email.includes("@") || !email.includes(".")) {
+          console.log("Email повинен мати @ та .")
+        } 
+        
+        if (password.length < 8 || password.length > 16) {
+          console.log('Пароль повинен бути від 8 до 16 символів')
+        }
 
         if (!email || !password) {
           console.log('Заповніть всі поля');
@@ -47,7 +56,7 @@ const RegisterPage = () => {
             categories: []
           }
           setUsers([newUser])
-          
+          navigate('/transactions');
           console.log(newUser)
         }
       }
