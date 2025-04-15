@@ -14,9 +14,7 @@ const LayoutPage = ({title, children} : {title: string, children:React.ReactNode
                     </div>
                 </div>
             </main>
-            <div className='footer-layout'>
-                <FooterMain />
-            </div>
+            <FooterMain />
         </div>
     )
 }

@@ -2,9 +2,14 @@
     display: flex;
     flex-direction: column;
     height: 100vh;
-    width: 100%;
+    width: 800px;
+    align-items: center;
 }
 
 .layout-main{
     min-height: 85vh;
+}
+
+input{
+    width: 200px;
 }

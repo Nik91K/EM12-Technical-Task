@@ -11,7 +11,6 @@ const CategoryForm = () => {
     const [text, setText] = useState("");
     const [categories, setCategories] = usePersistedState<Category[]>('categories', [])
     const handleClick = () => {
-        if (text.trim() === "") return;
 
         const newCategories: Category = {
             id: categories.length + 1,
