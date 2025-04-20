@@ -1,10 +1,11 @@
 .wrapper{
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    min-height: 80vh;
     width: 800px;
     align-items: center;
 }
+
 
 .layout-main{
     min-height: 85vh;

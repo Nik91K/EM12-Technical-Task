@@ -7,11 +7,9 @@ const LayoutPage = ({title, children} : {title: string, children:React.ReactNode
         <div className="wrapper">
             <HeaderMain userName='User' />
             <main className='layout-main'>
-                <div className='layout-container'>
-                    <h2 className='layout-h2'>{title}</h2>
-                    <div className="content">
-                        {children}
-                    </div>
+                <h2 className='layout-h2'>{title}</h2>
+                <div className="content">
+                    {children}
                 </div>
             </main>
             <FooterMain />

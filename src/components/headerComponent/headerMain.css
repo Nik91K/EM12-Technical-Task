@@ -9,7 +9,7 @@
 
 .header-main-logo{
     height: 48px;
-    width: 160px;
+    width: auto;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -23,4 +23,21 @@
     padding: 5px;
     font-size: 20px;
     font-weight: 600;
+}
+
+.header-login{
+    width: 64px;
+    height: 35px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+    color: #ccc;
+}
+
+.header-login:hover{
+    background-color: #3f3d3d;
+    transition: 0.3s;
 }
