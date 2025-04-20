@@ -1,5 +1,26 @@
-.headerMain{
+.header-main{
     width: 100%;
     border-bottom: 1px solid #ccc;
-    margin: 20px 0;
+    padding: 10px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.header-main-logo{
+    height: 48px;
+    width: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo{
+    border-radius: 5px;
+}
+
+.header-title{
+    padding: 5px;
+    font-size: 20px;
+    font-weight: 600;
 }

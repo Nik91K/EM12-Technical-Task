@@ -15,6 +15,7 @@ export function getFormInputValueByName(form: HTMLFormElement, name: string): st
 } 
 
 const RegisterPage = () => {
+
     const navigate = useNavigate()
     const [users, setUsers] = usePersistedState<UserType[]>('registeredUsers', [])
     const [userData, setUserData] = usePersistedState<UserType>('registeredUser', {
@@ -63,21 +64,21 @@ const RegisterPage = () => {
 
     return (
         <LayoutPage title='Register'>
-            <form onSubmit={handleSubmit}>
-               <div className='login-page'>
-                 <label htmlFor="name">Введіть ім'я користувача:</label>
-                 <InputComponent name="name" id="name" type="text" minLength={2} onChange={handleChange} value={userData.name} />
-               </div>
-               <div className='login-page'>
-                 <label htmlFor="email">Введіть ваш email:</label>
-                 <InputComponent name="email" id="email" type="email" placeholder='example@gmail.com' onChange={handleChange} value={userData.email} />
-               </div>
-               <div className='login-page'>
-                 <label htmlFor="password">Введіть ваш пароль:</label>
-                 <InputComponent name="password" id="password" type="password" minLength={8} maxLength={16} onChange={handleChange} value={userData.password}/>
-               </div>        
-               <SubmitComponent type='submit'/>
-            </form>
+          <form onSubmit={handleSubmit}>
+             <div className='login-page'>
+               <label htmlFor="name">Введіть ім'я користувача:</label>
+               <InputComponent name="name" id="name" type="text" minLength={2} onChange={handleChange} value={userData.name} />
+             </div>
+             <div className='login-page'>
+               <label htmlFor="email">Введіть ваш email:</label>
+               <InputComponent name="email" id="email" type="email" placeholder='example@gmail.com' onChange={handleChange} value={userData.email} />
+             </div>
+             <div className='login-page'>
+               <label htmlFor="password">Введіть ваш пароль:</label>
+               <InputComponent name="password" id="password" type="password" minLength={8} maxLength={16} onChange={handleChange}value={userData.password}/>
+             </div>        
+             <SubmitComponent type='submit'/>
+          </form>
         </LayoutPage>
     )
 }

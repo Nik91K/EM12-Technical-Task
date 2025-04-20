@@ -3,8 +3,17 @@ import GreetingsComponent from './greetingsComponent/greetingsComponent';
 
 const HeaderMain = (props:{userName: string}) => {
     return (
-        <header className="headerMain">
-            <h2>{GreetingsComponent()}, {props.userName}!</h2>
+        <header className="header-main">
+            <div className='header-main-logo'>
+                <img src="https://placehold.co/48x48" alt="Logo" className="logo" />
+                <p className='header-title'>Title</p>
+            </div>
+            <div className="header-greetings">
+                <h2>{GreetingsComponent()}, {props.userName}!</h2>
+            </div>
+            <div className='header-login'>
+                <a href="/login">Логін</a>
+            </div>
         </header>
     )
 }
