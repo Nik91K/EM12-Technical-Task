@@ -8,14 +8,15 @@ import InputComponent from '../../../../components/inputComponent/inputComponent
 import TransactionList from '../TransactionList/TransactionList'
 import { useState } from 'react'
 
-const TransactionForm = () => {
+const TransactionForm = ({ categories }: {categories: Category[]}) => {
+    console.log("Категорії у формі:", categories);
+
     const typeSelect = [
         { id: 1, name: 'income' as const },
         { id: 2, name: 'expense' as const }
     ]
     
     const [transaction, setTransaction] = usePersistedState<TransactionType[]>('transaction', [])
-    const [categories] = usePersistedState<Category[]>('categories', [])
     const [selectedCategory, setSelectedCategory] = useState("");
     const [selectedType, setSelectedType] = useState<"income" | "expense">("income");
     const [value, setValue] = useState(0);
@@ -64,6 +65,7 @@ const TransactionForm = () => {
                         </option>
                     ))}
                     </select>
+                    
                     <SelectComponent typeSelect={typeSelect} />
                 </div>
                 <div className='transaction-group'>
