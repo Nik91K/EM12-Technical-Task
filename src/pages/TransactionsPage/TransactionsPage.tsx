@@ -11,7 +11,6 @@ const TransactionsPage = () => {
                 <CategoryForm />
                 <div className="transaction-page">
                     <TransactionForm />
-                    <TransactionList />
                 </div>
             </div> 
         </LayoutPage>
