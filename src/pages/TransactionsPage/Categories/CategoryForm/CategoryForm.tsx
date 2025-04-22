@@ -4,6 +4,7 @@ import InputComponent from '../../../../components/inputComponent/inputComponent
 import { Category } from '../../../../types/categoryTypes'
 import { useState } from 'react'
 import CategoryList from '../CategoryList/CategoryList'
+import ErrorComponent from '../../../../components/errorComponent/errorComponent'
 
 type Props = {
     categories: Category[];
@@ -11,11 +12,12 @@ type Props = {
 }
 
 const CategoryForm = ({ categories, setCategories }: Props) => {
-    const [text, setText] = useState("");
+    const [text, setText] = useState("")
+    const [error, setError] = useState<string | null>(null)
 
     const handleClick = () => {
-        if (!text.trim()) {
-            alert('Напишіть назву категорії');
+        if (!text) {
+            setError('Напишіть назву категорії');
             return
         }
 
@@ -28,7 +30,8 @@ const CategoryForm = ({ categories, setCategories }: Props) => {
         }
 
         setCategories([...categories, newCategory]);
-        setText("")
+        setText('')
+        setError('')
     }
 
     return (
@@ -43,6 +46,7 @@ const CategoryForm = ({ categories, setCategories }: Props) => {
                     value={text}
                     onChange={(e) => setText(e.target.value)}
                 />
+                {error && <ErrorComponent>{error}</ErrorComponent>}
                 <SubmitComponent type='submit' onClick={handleClick}/>
             </form>
             <CategoryList categories={categories} setCategories={setCategories}/>

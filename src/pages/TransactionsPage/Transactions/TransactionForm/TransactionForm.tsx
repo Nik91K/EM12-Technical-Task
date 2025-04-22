@@ -7,6 +7,7 @@ import { TransactionType } from '../../../../types/transactionType'
 import InputComponent from '../../../../components/inputComponent/inputComponent'
 import TransactionList from '../TransactionList/TransactionList'
 import { useState } from 'react'
+import ErrorComponent from '../../../../components/errorComponent/errorComponent'
 
 const TransactionForm = ({ categories }: {categories: Category[]}) => {
     console.log("Категорії у формі:", categories);
@@ -17,17 +18,17 @@ const TransactionForm = ({ categories }: {categories: Category[]}) => {
     ]
     
     const [transaction, setTransaction] = usePersistedState<TransactionType[]>('transaction', [])
-    const [selectedCategory, setSelectedCategory] = useState("");
+    const [selectedCategory, setSelectedCategory] = useState('');
     const [selectedType, setSelectedType] = useState<"income" | "expense">("income");
     const [value, setValue] = useState(0);
     const [date, setDate] = useState("");
-
+    const [error, setError] = useState<string | null>(null);
     const handleClick = () => {
         const category = categories.find(cat => cat.name === selectedCategory);
         const typeObj = typeSelect.find(t => t.name === selectedType);    
 
-        if (!category || !typeObj) {
-            console.log('Заповніть всі поля')
+        if (!category || !typeObj || !value || !date) {
+            setError('Заповніть всі поля')
             return
         }
 
@@ -42,11 +43,11 @@ const TransactionForm = ({ categories }: {categories: Category[]}) => {
         }
 
         setTransaction([...transaction, newForm])
-        setSelectedCategory("");
+        setSelectedCategory('');
         setValue(0);
-        setDate("");
+        setDate('');
         console.log(newForm)
-        
+        setError('')
 
     }
 
@@ -76,7 +77,7 @@ const TransactionForm = ({ categories }: {categories: Category[]}) => {
                     <InputComponent type="number" id="value" name="value" onChange={(e) => setValue(Number(e.target.value))}/>
                 </div>
                 <div>
-                    {/* {error && <p className='error'>{error}</p>} */}
+                    {error && <ErrorComponent>{error}</ErrorComponent>}
                 </div>
                 <SubmitComponent type='submit' onClick={handleClick}/>
             </form>

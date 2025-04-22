@@ -5,17 +5,18 @@ import InputComponent from '../../../components/inputComponent/inputComponent';
 import SubmitComponent from '../../../components/submitComponent/submitComponent';
 import { usePersistedState } from '../../../hooks/usepersistedState';
 import { useNavigate } from 'react-router-dom';
+import ErrorComponent from '../../../components/errorComponent/errorComponent';
 
 export function getFormInputValueByName(form: HTMLFormElement, name: string): string {
     const control = form.elements.namedItem(name) as HTMLInputElement;
     if (!control || control instanceof RadioNodeList || !("value" in control)) {
-        throw new Error(`Form control "${name}" not found or was a RadioNodeList`);
+        throw new Error(`Form control "${name}" not found or was a RadioNodeList`)
     }  
     return control.value;
 } 
 
 const RegisterPage = () => {
-
+    const [error, setError] = usePersistedState<string | null>('error', null)
     const navigate = useNavigate()
     const [users, setUsers] = usePersistedState<UserType[]>('registeredUsers', [])
     const [userData, setUserData] = usePersistedState<UserType>('registeredUser', {
@@ -30,7 +31,7 @@ const RegisterPage = () => {
         setUserData({
           ...userData,
           [event.target.name]: event.target.value
-        });
+        })
       }
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) =>{
@@ -39,15 +40,18 @@ const RegisterPage = () => {
         const email:string = getFormInputValueByName(event.currentTarget, "email")
         const password:string = getFormInputValueByName(event.currentTarget, "password")
         if (!email.includes("@") || !email.includes(".")) {
-          console.log("Email повинен мати @ та .")
+          setError("Email повинен мати @ та .")
+          return
         } 
         
         if (password.length < 8 || password.length > 16) {
-          console.log('Пароль повинен бути від 8 до 16 символів')
+          setError('Пароль повинен бути від 8 до 16 символів')
+          return
         }
 
         if (!email || !password) {
-          console.log('Заповніть всі поля');
+          setError('Заповніть всі поля')
+          return
         } else {
           const newUser: UserType = {
             id: users.length + 1,
@@ -57,7 +61,7 @@ const RegisterPage = () => {
             categories: []
           }
           setUsers([newUser])
-          navigate('/transactions');
+          navigate('/transactions')
           console.log(newUser)
         }
       }
@@ -67,17 +71,18 @@ const RegisterPage = () => {
           <form onSubmit={handleSubmit}>
              <div className='login-page'>
                <label htmlFor="name">Введіть ім'я користувача:</label>
-               <InputComponent name="name" id="name" type="text" minLength={2} onChange={handleChange} value={userData.name} />
+               <InputComponent name="name" id="name" type="text" minLength={2} value={userData.name} onChange={handleChange}/>
              </div>
              <div className='login-page'>
                <label htmlFor="email">Введіть ваш email:</label>
-               <InputComponent name="email" id="email" type="email" placeholder='example@gmail.com' onChange={handleChange} value={userData.email} />
+               <InputComponent name="email" id="email" type="text" placeholder='example@gmail.com' value={userData.email} onChange={handleChange}/>
              </div>
              <div className='login-page'>
                <label htmlFor="password">Введіть ваш пароль:</label>
-               <InputComponent name="password" id="password" type="password" minLength={8} maxLength={16} onChange={handleChange}value={userData.password}/>
+               <InputComponent name="password" id="password" type="password" value={userData.password} onChange={handleChange}/>
              </div>        
-             <SubmitComponent type='submit'/>
+              {error && <ErrorComponent>{error}</ErrorComponent>}
+             <SubmitComponent type='submit' />
           </form>
         </LayoutPage>
     )
