@@ -18,7 +18,7 @@ const initialState: TypeState = {
   error: null,
 }
 
-const API_URL = "http://localhost:3000"
+const API_URL = process.env.API_URL || "http://localhost:3000/types";
 
 export const fetchTypes = createAsyncThunk("types/fetch", async () => {
     const res = await axios.get<Type[]>(API_URL)

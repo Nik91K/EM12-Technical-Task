@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
+import process from "process";
 
 export type Category = {
   id: number;
@@ -21,7 +22,7 @@ const initialState: CategoryState = {
   error: null,
 };
 
-const API_URL = "http://localhost:3000"
+const API_URL = process.env.API_URL || "http://localhost:3000/categories"
 
 export const fetchCategories = createAsyncThunk("categories/fetch", async () => {
   const res = await axios.get<Category[]>(API_URL)
