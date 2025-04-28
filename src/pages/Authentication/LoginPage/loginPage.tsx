@@ -56,6 +56,16 @@ const LoginPage = () => {
       } catch (error) {
         setError
       }
+
+      dispatch(loginUser({ email, password}))
+      .unwrap()
+      .then((data) => {
+        console.log("Успішно зареєстровано", data)
+        navigate('/transactions')
+      })
+      .catch((error) => {
+        console.log("Помилка реєстації", error)
+      })
       
     }
     return (

@@ -1,14 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
-import process from "process";
-
-export type Category = {
-  id: number;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
-  userId: number;
-};
+import { Category } from "../../types/categoryTypes";
+import axios from "../axios"
 
 interface CategoryState {
   categories: Category[];
@@ -22,12 +14,19 @@ const initialState: CategoryState = {
   error: null,
 };
 
-const API_URL = process.env.API_URL || "http://localhost:3000/categories"
+const API_URL = "http://localhost:3000"
+const SLICE_URL = "categories"
 
-export const fetchCategories = createAsyncThunk("categories/fetch", async () => {
-  const res = await axios.get<Category[]>(API_URL)
-  return res.data
-})
+export const fetchCategories = createAsyncThunk(
+  "auth/categories", 
+  async (categoryData: {name:string}, { rejectWithValue } ) => {
+    try {
+      const response = await axios.get<Category[]>(`${API_URL}/api/v1/${SLICE_URL}`)
+        return response.data
+      } catch (error: any) {
+          return rejectWithValue(error.response.data)
+      }
+  });
 
 const categorySlice = createSlice({
   name: "categories",

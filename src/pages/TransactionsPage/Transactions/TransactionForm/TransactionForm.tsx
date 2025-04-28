@@ -8,6 +8,7 @@ import InputComponent from '../../../../components/inputComponent/inputComponent
 import TransactionList from '../TransactionList/TransactionList'
 import { useState } from 'react'
 import ErrorComponent from '../../../../components/errorComponent/errorComponent'
+import TransactionChart from '../TransactionChart/TransactionChart'
 
 const TransactionForm = ({ categories }: {categories: Category[]}) => {
     console.log("Категорії у формі:", categories);
@@ -23,6 +24,9 @@ const TransactionForm = ({ categories }: {categories: Category[]}) => {
     const [value, setValue] = useState(0);
     const [date, setDate] = useState("");
     const [error, setError] = useState<string | null>(null);
+    const [totalIncome, setTotalIncome] = useState(0);
+    const [totalExpense, setTotalExpense] = useState(0);
+
     const handleClick = () => {
         const category = categories.find(cat => cat.name === selectedCategory);
         const typeObj = typeSelect.find(t => t.name === selectedType);    
@@ -49,6 +53,19 @@ const TransactionForm = ({ categories }: {categories: Category[]}) => {
         console.log(newForm)
         setError('')
 
+        const updatedTransactions = [...transaction, newForm];
+        setTransaction(updatedTransactions);
+            
+        const totalIncome = updatedTransactions
+          .filter(t => t.type.name === 'income')
+          .reduce((acc, curr) => acc + curr.value, 0)
+            
+        const totalExpense = updatedTransactions
+          .filter(t => t.type.name === 'expense')
+          .reduce((acc, curr) => acc + curr.value, 0)
+            
+        setTotalIncome(totalIncome)
+        setTotalExpense(totalExpense)
     }
 
 
@@ -82,6 +99,7 @@ const TransactionForm = ({ categories }: {categories: Category[]}) => {
                 <SubmitComponent type='submit' onClick={handleClick}/>
             </form>
             <TransactionList transaction={transaction} setTransaction={setTransaction}/>
+            <TransactionChart income={totalIncome} expense={totalExpense} />
         </div>
     )
 }

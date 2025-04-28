@@ -4,14 +4,17 @@ import { UserType } from '../../../types/userTypes';
 import InputComponent from '../../../components/inputComponent/inputComponent';
 import SubmitComponent from '../../../components/submitComponent/submitComponent';
 import { usePersistedState } from '../../../hooks/usepersistedState';
-import { useNavigate } from 'react-router-dom';
+import { data, useNavigate } from 'react-router-dom';
 import ErrorComponent from '../../../components/errorComponent/errorComponent';
 import { useAppDispatch, useAppSelector } from '../../../api/hooks';
 import { registerUser, User } from '../../../api/slices/authSlice';
+import { getFormInputValueByName } from '../../../utils/getInput';
 
 const RegisterPage = () => {
-    const [error, setError] = usePersistedState<string | null>('error', null)
+    const [textError, setError] = usePersistedState<string | null>('error', null)
     const navigate = useNavigate()
+    const {loading} = useAppSelector((state) => state.category)
+
     const [userData, setUserData] = usePersistedState<UserType>('registeredUser', {
         id: 0,
         name: '',
@@ -32,7 +35,11 @@ const RegisterPage = () => {
     const handleSubmit = async (event:React.FormEvent<HTMLFormElement>) =>{
         event.preventDefault()
 
-        const { name, email, password } = userData
+        let email = getFormInputValueByName(event.currentTarget, "email")
+        let password = getFormInputValueByName(event.currentTarget, "password")
+        let name = getFormInputValueByName(event.currentTarget, "name")
+
+        // const { name, email, password } = userData
         
         if (!email || !password || !name) {
           setError('Заповніть всі поля')
@@ -55,16 +62,20 @@ const RegisterPage = () => {
           return
         }
 
-        try {
-            await dispatch(registerUser({ name, email, password })).unwrap()
+        dispatch(registerUser({ email, password, name}))
+          .unwrap()
+          .then((data) => {
+            console.log("Успішно зареєстровано", data)
             navigate('/transactions')
-        } catch (err: any) {
-            setError(err)
-        }
+          })
+          .catch((error) => {
+            console.log("Помилка реєстації", error)
+          })
       }
 
     return (
         <LayoutPage title='Register'>
+          <p>{loading && "Завантаження"}</p>
           <form onSubmit={handleSubmit} className='register-page'>
              <div className='login-page'>
                <label htmlFor="name">Введіть ім'я користувача:</label>
@@ -72,13 +83,13 @@ const RegisterPage = () => {
              </div>
              <div className='login-page'>
                <label htmlFor="email">Введіть ваш email:</label>
-               <InputComponent name="email" id="email" type="text" placeholder='example@gmail.com' value={userData.email} onChange={handleChange}/>
+               <InputComponent name="email" id="email" type="email" placeholder='example@gmail.com' value={userData.email} onChange={handleChange}/>
              </div>
              <div className='login-page'>
                <label htmlFor="password">Введіть ваш пароль:</label>
                <InputComponent name="password" id="password" type="password" value={userData.password} onChange={handleChange}/>
              </div>        
-              {error && <ErrorComponent>{error}</ErrorComponent>}
+              {textError && <ErrorComponent>{textError}</ErrorComponent>}
              <SubmitComponent type='submit' />
           </form>
         </LayoutPage>

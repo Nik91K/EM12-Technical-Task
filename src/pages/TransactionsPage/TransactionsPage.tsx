@@ -4,6 +4,7 @@ import CategoryForm from './Categories/CategoryForm/CategoryForm'
 import TransactionForm from './Transactions/TransactionForm/TransactionForm'
 import { usePersistedState } from '../../hooks/usepersistedState'
 import { Category } from '../../types/categoryTypes'
+import TransactionChart from './Transactions/TransactionChart/TransactionChart'
 
 const TransactionsPage = () => {
     const [categories, setCategories] = usePersistedState<Category[]>('categories', [])
@@ -13,6 +14,7 @@ const TransactionsPage = () => {
                 <CategoryForm categories={categories} setCategories={setCategories} />
                 <div className="transaction-page">
                     <TransactionForm categories={categories}/>
+                    
                 </div>
             </div> 
         </LayoutPage>

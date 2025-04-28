@@ -11,12 +11,14 @@ interface TypeState {
     types: User[];
     loading: boolean;
     error: string | null;
+    token: string | null
 }
 
 const initialState: TypeState = {
   types: [],
   loading: false,
   error: null,
+  token: localStorage.getItem('token') || null,
 }
 
 const API_URL = "http://localhost:3000"
@@ -59,7 +61,8 @@ const authSlice = createSlice({
             })
             .addCase(registerUser.fulfilled, (state, action) => {
                 state.loading = false
-                state.types.push(action.payload as any)
+                const response:{ access_token: string } = action.payload as any
+                localStorage.setItem('token', response.access_token)
             })
             .addCase(registerUser.rejected, (state, action) => {
                 state.loading = false
@@ -73,7 +76,8 @@ const authSlice = createSlice({
             })
             .addCase(loginUser.fulfilled, (state, action) => {
                 state.loading = false
-                state.types.push(action.payload as any)
+                const response:{ access_token: string } = action.payload as any
+                localStorage.setItem('token', response.access_token)
             })
             .addCase(loginUser.rejected, (state, action) => {
                 state.loading = false

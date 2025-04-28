@@ -5,39 +5,42 @@ import { Category } from '../../../../types/categoryTypes'
 import { useState } from 'react'
 import CategoryList from '../CategoryList/CategoryList'
 import ErrorComponent from '../../../../components/errorComponent/errorComponent'
+import { useAppDispatch, useAppSelector } from '../../../../api/hooks'
+import { fetchCategories } from '../../../../api/slices/categorySlice'
+import { categoryReducer } from '../../../../api/slices/categorySlice'
+import { usePersistedState } from '../../../../hooks/usepersistedState'
+import { getFormInputValueByName } from '../../../../utils/getInput'
 
-type Props = {
-    categories: Category[];
-    setCategories: React.Dispatch<React.SetStateAction<Category[]>>
-}
+const CategoryForm = () => {
+        const [textError, setError] = usePersistedState<string | null>('error', null)
+        const dispatch = useAppDispatch()
+        const [text, setText] = useState('')
+        const { categories, loading, error } = useAppSelector((state) => state.category)
 
-const CategoryForm = ({ categories, setCategories }: Props) => {
-    const [text, setText] = useState("")
-    const [error, setError] = useState<string | null>(null)
+const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
 
-    const handleClick = () => {
-        if (!text) {
-            setError('Напишіть назву категорії');
-            return
-        }
+    let name = getFormInputValueByName(event.currentTarget, "CategoryName")
 
-        const newCategory: Category = {
-            id: categories.length + 1,
-            name: text,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-            userId: 1,
-        }
-
-        setCategories([...categories, newCategory]);
-        setText('')
-        setError('')
+    if (!name) {
+        setError("Введіть данні")
+        return
     }
 
+    dispatch(fetchCategories({ name }))
+      .unwrap()
+      .then((data) => {
+        console.log("Успішно створено", data)
+      })
+      .catch((error) => {
+        console.log("Помилка категорії", error)
+      })
+}
     return (
         <div className='main-category-form'>
             <h2>New Category</h2>
-            <form className='category-form' onSubmit={(e) => e.preventDefault()}>
+            <p>{loading && 'Завантаження'}</p>
+            <form className='category-form' onSubmit={handleSubmit}>
                 <label htmlFor="category-name">Category Name:</label>
                 <InputComponent 
                     type='text' 
@@ -46,10 +49,9 @@ const CategoryForm = ({ categories, setCategories }: Props) => {
                     value={text}
                     onChange={(e) => setText(e.target.value)}
                 />
-                {error && <ErrorComponent>{error}</ErrorComponent>}
-                <SubmitComponent type='submit' onClick={handleClick}/>
+                {textError && <ErrorComponent>{textError}</ErrorComponent>}
+                <SubmitComponent type='submit'/>
             </form>
-            <CategoryList categories={categories} setCategories={setCategories}/>
         </div>
     )
 }
