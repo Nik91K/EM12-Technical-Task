@@ -6,69 +6,66 @@ import SubmitComponent from '../../../components/submitComponent/submitComponent
 import { usePersistedState } from '../../../hooks/usepersistedState';
 import { useNavigate } from 'react-router-dom';
 import ErrorComponent from '../../../components/errorComponent/errorComponent';
-
-export function getFormInputValueByName(form: HTMLFormElement, name: string): string {
-    const control = form.elements.namedItem(name) as HTMLInputElement;
-    if (!control || control instanceof RadioNodeList || !("value" in control)) {
-        throw new Error(`Form control "${name}" not found or was a RadioNodeList`)
-    }  
-    return control.value;
-} 
+import { useAppDispatch, useAppSelector } from '../../../api/hooks';
+import { registerUser, User } from '../../../api/slices/authSlice';
 
 const RegisterPage = () => {
     const [error, setError] = usePersistedState<string | null>('error', null)
     const navigate = useNavigate()
-    const [users, setUsers] = usePersistedState<UserType[]>('registeredUsers', [])
     const [userData, setUserData] = usePersistedState<UserType>('registeredUser', {
         id: 0,
         name: '',
         email: '',
         password: '',
         categories: []
-      })
+    })
 
-    const handleChange = (event:React.ChangeEvent<HTMLInputElement>) =>{
-        setUserData({
+    const dispatch = useAppDispatch();
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) =>{
+      setUserData({
           ...userData,
-          [event.target.name]: event.target.value
-        })
-      }
+          [event.target.name]: event.target.value,
+      })
+    }
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) =>{
+    const handleSubmit = async (event:React.FormEvent<HTMLFormElement>) =>{
         event.preventDefault()
-        const userName:string = getFormInputValueByName(event.currentTarget, "name")
-        const email:string = getFormInputValueByName(event.currentTarget, "email")
-        const password:string = getFormInputValueByName(event.currentTarget, "password")
+
+        const { name, email, password } = userData
+        
+        if (!email || !password || !name) {
+          setError('Заповніть всі поля')
+          return
+        }  
+
         if (!email.includes("@") || !email.includes(".")) {
           setError("Email повинен мати @ та .")
           return
         } 
+
+        if (email.length < 5 || email.length > 30) {
+          setError('Емайл повинен бути менше 5 та більше 30 символів')
+          return
+        }
+
         
         if (password.length < 8 || password.length > 16) {
           setError('Пароль повинен бути від 8 до 16 символів')
           return
         }
 
-        if (!email || !password) {
-          setError('Заповніть всі поля')
-          return
-        } else {
-          const newUser: UserType = {
-            id: users.length + 1,
-            name: userName,
-            email: email,
-            password: password,
-            categories: []
-          }
-          setUsers([newUser])
-          navigate('/transactions')
-          console.log(newUser)
+        try {
+            await dispatch(registerUser({ name, email, password })).unwrap()
+            navigate('/transactions')
+        } catch (err: any) {
+            setError(err)
         }
       }
 
     return (
         <LayoutPage title='Register'>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className='register-page'>
              <div className='login-page'>
                <label htmlFor="name">Введіть ім'я користувача:</label>
                <InputComponent name="name" id="name" type="text" minLength={2} value={userData.name} onChange={handleChange}/>

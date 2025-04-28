@@ -7,6 +7,8 @@ import { UserType } from '../../../types/userTypes';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import ErrorComponent from '../../../components/errorComponent/errorComponent';
+import { loginUser } from '../../../api/slices/authSlice';
+import { useAppDispatch } from '../../../api/hooks';
 
 const LoginPage = () => {
   const [error, setError] = usePersistedState<string | null>('error', null)
@@ -19,33 +21,42 @@ const LoginPage = () => {
         password: '',
         categories: []
     })
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+
+    const dispatch = useAppDispatch();
+
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault()
       const form = event.currentTarget;
       const email = form.email.value;
       const password = form.password.value;
 
-      if (email === registeredUser.email && password === registeredUser.password) {
-        console.log('Вхід');
-        navigate('/transactions');
-      } else {
-        setError('Невірний email або пароль')
-        return
-      }
 
       if (!email || !password) {
         setError('Заповніть всі поля');
         return
       }
-      if (email.length < 5 || email.length > 30, !email.includes('@'), !email.includes('.')) {
-        setError('Email повинен бути від 5 до 30 символів, містити @ та .')
-        return
-      }
-      if (password.length < 8 || password.length > 16) {
-        setError('Пароль повинен бути від 8 до 16 символів');
+
+      if (email.length < 5 || email.length > 30) {
+        setError('Емайл повинен бути менше 5 та більше 30 символів');
         return
       }
 
+      if (!email.includes('@') || !email.includes('.')) {
+        setError('Емайл повинен містити @ та .');
+        return
+      }
+      if (password.length < 8 || password.length > 16) {
+        setError('Пароль повинен бути від 8 до 16 символів')
+        return
+      }
+
+      try {
+        await dispatch(loginUser({ email, password })).unwrap()
+        navigate('/transactions')
+      } catch (error) {
+        setError
+      }
+      
     }
     return (
         <LayoutPage title='login'>
