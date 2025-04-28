@@ -2,11 +2,9 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 
 export type User = {
-    id: number;
     name: string;
     email: string;
     password: string;
-    categories: [];
 }
 
 interface TypeState {
@@ -21,13 +19,14 @@ const initialState: TypeState = {
   error: null,
 }
 
-const API_URL = process.env.API_URL || "http://localhost:3000/types"
+const API_URL = "http://localhost:3000"
+const SLISE_URL = "auth"
 
 export const registerUser = createAsyncThunk(
-    "user/register",
-    async (userData: Omit<User, "id" | "categories">, { rejectWithValue }) => {
+    "auth/register",
+    async (userData: { email: string; password: string; name: string }, { rejectWithValue }) => {
         try {
-            const response = await axios.post(`${API_URL}/register`, userData)
+            const response = await axios.post(`${API_URL}/api/v1/${SLISE_URL}/register`, userData)
             return response.data
         } catch (error: any) {
             return rejectWithValue(error.response?.data?.message || "Registration failed")
@@ -36,10 +35,10 @@ export const registerUser = createAsyncThunk(
 )
 
 export const loginUser = createAsyncThunk(
-    "user/login",
+    "auth/login",
     async (credentials: { email: string; password: string }, { rejectWithValue }) => {
         try {
-            const response = await axios.post(`${API_URL}/login`, credentials)
+            const response = await axios.post(`${API_URL}/api/v1/${SLISE_URL}/login`, credentials)
             return response.data
         } catch (error: any) {
             return rejectWithValue(error.response?.data?.message || "Login failed")
@@ -55,31 +54,31 @@ const authSlice = createSlice({
         builder
             // реєстр
             .addCase(registerUser.pending, (state) => {
-                state.loading = true;
-                state.error = null;
+                state.loading = true
+                state.error = null
             })
-            .addCase(registerUser.fulfilled, (state, action: PayloadAction<User>) => {
-                state.loading = false;
-                state.types.push(action.payload);
+            .addCase(registerUser.fulfilled, (state, action) => {
+                state.loading = false
+                state.types.push(action.payload as any)
             })
             .addCase(registerUser.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload as string;
+                state.loading = false
+                state.error = action.payload as string
             })
 
             // лоігін
             .addCase(loginUser.pending, (state) => {
-                state.loading = true;
-                state.error = null;
+                state.loading = true
+                state.error = null
             })
-            .addCase(loginUser.fulfilled, (state, action: PayloadAction<User>) => {
-                state.loading = false;
-                state.types.push(action.payload)
+            .addCase(loginUser.fulfilled, (state, action) => {
+                state.loading = false
+                state.types.push(action.payload as any)
             })
             .addCase(loginUser.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload as string;
-            });
+                state.loading = false
+                state.error = action.payload as string
+            })
     }
 });
 
