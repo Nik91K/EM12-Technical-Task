@@ -45,4 +45,4 @@ const typeSlice  = createSlice({
     },
 })
 
-export const { reducer: typeReducer } = typeSlice;
+export default typeSlice.reducer
