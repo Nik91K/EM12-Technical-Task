@@ -4,6 +4,7 @@
 
 .category-list{
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
     margin-left: 5px;
     width: 200px;

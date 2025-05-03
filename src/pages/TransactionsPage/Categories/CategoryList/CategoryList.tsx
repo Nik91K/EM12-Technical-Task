@@ -1,21 +1,27 @@
 import './CategoryList.css'
-import { Category } from '../../../../types/categoryTypes'
 import DeleteComponent from '../../../../components/deleteComponent/DeleteComponent'
+import { useEffect } from 'react'
+import { fetchCategories } from '../../../../api/slices/categorySlice'
+import { useAppSelector, useAppDispatch } from '../../../../api/hooks'
 
-const CategoryList = ({ categories, setCategories }: {categories: Category[], setCategories: Function}) => {
-    function handleDelete(taskId: number) {
-        console.log('завдання Ід видалено', taskId)
-        setCategories(categories.filter((t) => t.id !== taskId))
-    }
+
+const CategoryList = () => {
+    const { categories, loading, error } = useAppSelector((state) => state.category)
+
+
     return (
         <div className='category-list-main'>
             <h2>Category List</h2>
-            {categories.map((category) => (
-                <div className='category-list'>
-                    <p>{category.name}</p>
-                    <DeleteComponent onClick={() => handleDelete(category.id)}/>
-                </div>
-            ))}
+            <p>{ loading && 'Завантаження'}</p>
+            <p className="error">{error && error}</p>
+            <ul className='category-list'>
+                {categories.map((category) => (
+                    <li key={category.id} className='category-item'>
+                        <span>{category.name}</span>
+                        <DeleteComponent/>
+                    </li>
+                ))}
+            </ul>
         </div>
     )
 }
