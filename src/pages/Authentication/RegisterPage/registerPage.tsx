@@ -1,43 +1,27 @@
 import './registerPage.css';
 import LayoutPage from '../../../layoutPage';
-import { UserType } from '../../../types/userTypes';
 import InputComponent from '../../../components/inputComponent/inputComponent';
 import SubmitComponent from '../../../components/submitComponent/submitComponent';
 import { usePersistedState } from '../../../hooks/usepersistedState';
-import { data, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import ErrorComponent from '../../../components/errorComponent/errorComponent';
 import { useAppDispatch, useAppSelector } from '../../../api/hooks';
-import { registerUser, User } from '../../../api/slices/authSlice';
+import { registerUser } from '../../../api/slices/authSlice';
 import { getFormInputValueByName } from '../../../utils/getInput';
 
 const RegisterPage = () => {
     const [textError, setError] = usePersistedState<string | null>('error', null)
     const navigate = useNavigate()
-    const {loading} = useAppSelector((state) => state.category)
-
-    const [userData, setUserData] = usePersistedState<UserType>('registeredUser', {
-        id: 0,
-        name: '',
-        email: '',
-        password: '',
-        categories: []
-    })
+    const {user, loading, error} = useAppSelector((state) => state.auth)
 
     const dispatch = useAppDispatch();
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) =>{
-      setUserData({
-          ...userData,
-          [event.target.name]: event.target.value,
-      })
-    }
-
-    const handleSubmit = async (event:React.FormEvent<HTMLFormElement>) =>{
+    const handleSubmit = (event:React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
 
+        let name = getFormInputValueByName(event.currentTarget, "name")
         let email = getFormInputValueByName(event.currentTarget, "email")
         let password = getFormInputValueByName(event.currentTarget, "password")
-        let name = getFormInputValueByName(event.currentTarget, "name")
 
         // const { name, email, password } = userData
         
@@ -79,15 +63,15 @@ const RegisterPage = () => {
           <form onSubmit={handleSubmit} className='register-page'>
              <div className='login-page'>
                <label htmlFor="name">Введіть ім'я користувача:</label>
-               <InputComponent name="name" id="name" type="text" minLength={2} value={userData.name} onChange={handleChange}/>
+               <InputComponent name="name" type="text" minLength={2}/>
              </div>
              <div className='login-page'>
                <label htmlFor="email">Введіть ваш email:</label>
-               <InputComponent name="email" id="email" type="email" placeholder='example@gmail.com' value={userData.email} onChange={handleChange}/>
+               <InputComponent name="email" type="email" placeholder='example@gmail.com'/>
              </div>
              <div className='login-page'>
                <label htmlFor="password">Введіть ваш пароль:</label>
-               <InputComponent name="password" id="password" type="password" value={userData.password} onChange={handleChange}/>
+               <InputComponent name="password" type="password"/>
              </div>        
               {textError && <ErrorComponent>{textError}</ErrorComponent>}
              <SubmitComponent type='submit' />
