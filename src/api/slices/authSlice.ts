@@ -1,49 +1,46 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
-
-export type User = {
-    name: string;
-    email: string;
-    password: string;
-}
+import { UserType } from "../../types/userTypes";
 
 interface TypeState {
-    types: User[];
+    user: UserType | null;
     loading: boolean;
     error: string | null;
     token: string | null
 }
 
 const initialState: TypeState = {
-  types: [],
+  user: null,
   loading: false,
   error: null,
   token: localStorage.getItem('token') || null,
 }
 
-const API_URL = "http://localhost:3000"
-const SLISE_URL = "auth"
+const API_URL = "http://localhost:3000/api/v1"
+const SLICE_URL = "auth"
 
 export const registerUser = createAsyncThunk(
-    "auth/register",
-    async (userData: { email: string; password: string; name: string }, { rejectWithValue }) => {
+    'auth/register',
+    async (userData: { name: string; email: string; password: string }, { rejectWithValue }) => {
         try {
-            const response = await axios.post(`${API_URL}/api/v1/${SLISE_URL}/register`, userData)
+            const response:any = await axios.post(`${API_URL}/${SLICE_URL}/register`, userData)
+            localStorage.setItem('token', response.data.access_token)
             return response.data
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || "Registration failed")
+        } catch (error:any) {
+            return rejectWithValue(error.response.data);
         }
     }
 )
 
 export const loginUser = createAsyncThunk(
     "auth/login",
-    async (credentials: { email: string; password: string }, { rejectWithValue }) => {
+    async (userData: { email: string; password: string }, { rejectWithValue }) => {
         try {
-            const response = await axios.post(`${API_URL}/api/v1/${SLISE_URL}/login`, credentials)
+            const response:any = await axios.post(`${API_URL}/${SLICE_URL}/login`, userData)
+            localStorage.setItem('token', response.data.access_token)
             return response.data
         } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || "Login failed")
+            return rejectWithValue(error.response.data.message || "Login failed")
         }
     }
 )
@@ -56,34 +53,31 @@ const authSlice = createSlice({
         builder
             // реєстр
             .addCase(registerUser.pending, (state) => {
-                state.loading = true
-                state.error = null
+                state.loading = true;
+                state.error = null;
             })
             .addCase(registerUser.fulfilled, (state, action) => {
-                state.loading = false
-                const response:{ access_token: string } = action.payload as any
-                localStorage.setItem('token', response.access_token)
+                state.loading = false;
             })
             .addCase(registerUser.rejected, (state, action) => {
-                state.loading = false
-                state.error = action.payload as string
+                state.loading = false;
+                state.error = action.payload as string;
             })
 
             // лоігін
             .addCase(loginUser.pending, (state) => {
-                state.loading = true
-                state.error = null
+                state.loading = true;
+                state.error = null;
             })
             .addCase(loginUser.fulfilled, (state, action) => {
-                state.loading = false
-                const response:{ access_token: string } = action.payload as any
-                localStorage.setItem('token', response.access_token)
+                state.loading = false;
+                
             })
             .addCase(loginUser.rejected, (state, action) => {
-                state.loading = false
+                state.loading = false;
                 state.error = action.payload as string
             })
     }
-});
+})
 
-export const { reducer: authReducer } = authSlice;
+export default authSlice.reducer

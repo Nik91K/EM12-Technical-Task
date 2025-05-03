@@ -1,11 +1,11 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { Category } from "../../types/categoryTypes";
 import axios from "../axios"
 
 interface CategoryState {
-  categories: Category[];
-  loading: boolean;
-  error: string | null;
+  categories: Category[]
+  loading: boolean
+  error: string | null
 }
 
 const initialState: CategoryState = {
@@ -14,38 +14,65 @@ const initialState: CategoryState = {
   error: null,
 };
 
-const API_URL = "http://localhost:3000"
 const SLICE_URL = "categories"
 
-export const fetchCategories = createAsyncThunk(
-  "auth/categories", 
-  async (categoryData: {name:string}, { rejectWithValue } ) => {
+export const createCatagory = createAsyncThunk(
+  'category/create',
+  async (categoryData: { name: string }, { rejectWithValue } ) => {
     try {
-      const response = await axios.get<Category[]>(`${API_URL}/api/v1/${SLICE_URL}`)
+        const response:any = await axios.post(`/${SLICE_URL}`, categoryData)
         return response.data
       } catch (error: any) {
           return rejectWithValue(error.response.data)
       }
-  });
+  }
+)
+
+export const fetchCategories = createAsyncThunk(
+  'category/fetchAll',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`/${SLICE_URL}`);
+      return response.data as Category[]
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+)
 
 const categorySlice = createSlice({
-  name: "categories",
+  name: 'category',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchCategories.pending, (state) => {
-        state.loading = true
+    // зберегти
+      .addCase(createCatagory.pending, (state) => {
+          state.loading = true
+          state.error = null
       })
-      .addCase(fetchCategories.fulfilled, (state, action: PayloadAction<Category[]>) => {
-        state.loading = false
-        state.categories = action.payload
+      .addCase(createCatagory.fulfilled, (state, action) => {
+          state.loading = false
+          state.categories.push(action.payload)
       })
-      .addCase(fetchCategories.rejected, (state, action) => {
-        state.loading = false
-        state.error = action.error.message || "Something went wrong"
-      });
+      .addCase(createCatagory.rejected, (state, action) => {
+          state.loading = false
+          state.error = action.payload as string
+      })
+    // відображати
+    .addCase(fetchCategories.pending, (state) => {
+      state.loading = true
+      state.error = null
+    })
+    .addCase(fetchCategories.fulfilled, (state, action) => {
+      state.loading = false;
+      state.categories = action.payload
+    })
+    .addCase(fetchCategories.rejected, (state, action) => {
+      state.loading = false
+      state.error = action.payload as string
+    });
   },
 });
 
-export const { reducer: categoryReducer } = categorySlice;
+export default categorySlice.reducer
