@@ -1,33 +1,31 @@
 import './CategoryForm.css'
 import SubmitComponent from '../../../../components/submitComponent/submitComponent'
 import InputComponent from '../../../../components/inputComponent/inputComponent'
-import { Category } from '../../../../types/categoryTypes'
-import { useState } from 'react'
 import CategoryList from '../CategoryList/CategoryList'
 import ErrorComponent from '../../../../components/errorComponent/errorComponent'
 import { useAppDispatch, useAppSelector } from '../../../../api/hooks'
-import { fetchCategories } from '../../../../api/slices/categorySlice'
-import { categoryReducer } from '../../../../api/slices/categorySlice'
+import { createCatagory } from '../../../../api/slices/categorySlice'
 import { usePersistedState } from '../../../../hooks/usepersistedState'
 import { getFormInputValueByName } from '../../../../utils/getInput'
+import { useEffect } from 'react'
+import { fetchCategories } from '../../../../api/slices/categorySlice'
+import { fetchTypes } from '../../../../api/slices/typeSlice'
 
 const CategoryForm = () => {
         const [textError, setError] = usePersistedState<string | null>('error', null)
         const dispatch = useAppDispatch()
-        const [text, setText] = useState('')
         const { categories, loading, error } = useAppSelector((state) => state.category)
 
 const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-
-    let name = getFormInputValueByName(event.currentTarget, "CategoryName")
+    let name = getFormInputValueByName(event.currentTarget, "name")
 
     if (!name) {
         setError("Введіть данні")
         return
     }
 
-    dispatch(fetchCategories({ name }))
+    dispatch(createCatagory({name}))
       .unwrap()
       .then((data) => {
         console.log("Успішно створено", data)
@@ -36,6 +34,15 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         console.log("Помилка категорії", error)
       })
 }
+
+
+useEffect(() => {
+    const token = localStorage.getItem('token')
+    if (token) {
+      dispatch(fetchCategories())
+    }
+  }, []);
+
     return (
         <div className='main-category-form'>
             <h2>New Category</h2>
@@ -44,14 +51,15 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
                 <label htmlFor="category-name">Category Name:</label>
                 <InputComponent 
                     type='text' 
-                    name='CategoryName' 
-                    id='CategoryName' 
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
+                    name='name'
                 />
                 {textError && <ErrorComponent>{textError}</ErrorComponent>}
                 <SubmitComponent type='submit'/>
             </form>
+            {categories.length >0 && (
+                <CategoryList />
+            )}
+            
         </div>
     )
 }
