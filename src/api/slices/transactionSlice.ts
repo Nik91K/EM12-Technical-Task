@@ -42,6 +42,18 @@ export const createTransaction = createAsyncThunk(
     }
 )
 
+export const fetchTransaction = createAsyncThunk(
+  'transaction/fetchAll',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`/${SLICE_URL}`);
+      return response.data as TransactionType[]
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+)
+
 const transactionSlice = createSlice({
   name: 'transaction',
   initialState,
@@ -57,6 +69,19 @@ const transactionSlice = createSlice({
         state.transaction.push(action.payload)
       })
       .addCase(createTransaction.rejected, (state, action) => {
+        state.loading = false
+        state.error = action.payload as string
+      })
+
+      .addCase(fetchTransaction.pending, (state) => {
+        state.loading = true
+        state.error = null
+      })
+      .addCase(fetchTransaction.fulfilled, (state, action) => {
+        state.loading = false
+        state.transaction = action.payload
+      })
+      .addCase(fetchTransaction.rejected, (state, action) => {
         state.loading = false
         state.error = action.payload as string
       })
