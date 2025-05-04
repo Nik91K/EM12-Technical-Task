@@ -1,9 +1,9 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
+import axios from "../axios";
 
 export type Type = {
     id: number;
-    name: "income" | "expense";
+    name: "Income" | "Expense";
 }
 
 interface TypeState {
@@ -18,14 +18,21 @@ const initialState: TypeState = {
   error: null,
 }
 
-const API_URL = "http://localhost:3000"
+const SLICE_URL = "transaction-type"
+ 
 
-export const fetchTypes = createAsyncThunk("types/fetch", async () => {
-    const res = await axios.get<Type[]>(API_URL)
-    return res.data
+export const fetchTypes = createAsyncThunk(
+  "types/fetch", 
+  async (typeData: {name: string}, { rejectWithValue }) => {
+    try {
+      const response:any = await axios.post(`/${SLICE_URL}`, typeData)
+      return response.data
+    } catch (error: any) {
+        return rejectWithValue(error.response.data)
+    }
 })
 
-const typeSlice  = createSlice({
+export const typeSlice  = createSlice({
     name: "type",
     initialState,
     reducers: {},
