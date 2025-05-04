@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from '../../../api/hooks';
 import { registerUser } from '../../../api/slices/authSlice';
 import { getFormInputValueByName } from '../../../utils/getInput';
 import React from 'react';
+import LoaderComponent from '../../../components/loaderComponent/loaderComponent';
 
 const RegisterPage = () => {
   const [textError, setError] = React.useState<string | null>(null)
@@ -51,7 +52,7 @@ const RegisterPage = () => {
 
     return (
         <LayoutPage title='Register'>
-          <p>{loading && "Завантаження"}</p>
+          <p>{loading && <LoaderComponent />}</p>
           <form onSubmit={handleSubmit} className='register-page'>
              <div className='login-page'>
                <label htmlFor="name">Введіть ім'я користувача:</label>

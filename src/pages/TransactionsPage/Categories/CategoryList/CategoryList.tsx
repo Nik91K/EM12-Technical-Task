@@ -1,6 +1,7 @@
 import './CategoryList.css'
 import DeleteComponent from '../../../../components/deleteComponent/DeleteComponent'
 import { useAppSelector } from '../../../../api/hooks'
+import LoaderComponent from '../../../../components/loaderComponent/loaderComponent'
 
 
 const CategoryList = () => {
@@ -10,7 +11,7 @@ const CategoryList = () => {
     return (
         <div className='category-list-main'>
             <h2>Category List</h2>
-            <p>{ loading && 'Завантаження'}</p>
+            <p>{ loading && <LoaderComponent />}</p>
             <p className="error">{error && error}</p>
             <ul className='category-list'>
                 {categories.map((category) => (

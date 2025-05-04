@@ -8,6 +8,7 @@ import React, { useEffect } from 'react'
 import { useAppSelector, useAppDispatch } from '../../../../api/hooks'
 import { fetchCategories } from '../../../../api/slices/categorySlice'
 import { createTransaction } from '../../../../api/slices/transactionSlice'
+import LoaderComponent from '../../../../components/loaderComponent/loaderComponent'
 
 const TransactionForm = () => {
     const [textError, setError] = React.useState<string | null>(null)
@@ -48,7 +49,7 @@ const TransactionForm = () => {
 
     return (
         <div>
-            <p>{loading && 'Заавантаження'}</p>
+            <p>{loading && <LoaderComponent />}</p>
             <form className='transaction-form' onSubmit={handleSubmit}>
                 <h2>New Transaction</h2>
                 <div className='transaction-group'>

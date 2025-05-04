@@ -7,13 +7,12 @@ import { Category } from '../../types/categoryTypes'
 import TransactionChart from './Transactions/TransactionChart/TransactionChart'
 
 const TransactionsPage = () => {
-    const [categories, setCategories] = usePersistedState<Category[]>('categories', [])
     return (
         <LayoutPage title="Головна стонка">
             <div className="category-page">
-                <CategoryForm categories={categories} setCategories={setCategories} />
+                <CategoryForm  />
                 <div className="transaction-page">
-                    <TransactionForm categories={categories}/>
+                    <TransactionForm />
                     
                 </div>
             </div> 

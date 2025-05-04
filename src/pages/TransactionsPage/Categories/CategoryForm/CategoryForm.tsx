@@ -9,6 +9,7 @@ import { usePersistedState } from '../../../../hooks/usepersistedState'
 import { getFormInputValueByName } from '../../../../utils/getInput'
 import { useEffect } from 'react'
 import { fetchCategories } from '../../../../api/slices/categorySlice'
+import LoaderComponent from '../../../../components/loaderComponent/loaderComponent'
 
 const CategoryForm = () => {
         const [textError, setError] = usePersistedState<string | null>('error', null)
@@ -45,7 +46,7 @@ useEffect(() => {
     return (
         <div className='main-category-form'>
             <h2>New Category</h2>
-            <p>{loading && 'Завантаження'}</p>
+            <p>{loading && <LoaderComponent />}</p>
             <form className='category-form' onSubmit={handleSubmit}>
                 <label htmlFor="category-name">Category Name:</label>
                 <InputComponent 
