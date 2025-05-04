@@ -11,9 +11,9 @@ const CategoryList = () => {
     return (
         <div className='category-list-main'>
             <h2>Category List</h2>
-            <div>{ loading && <LoaderComponent />}</div>
             <p className="error">{error && error}</p>
             <ul className='category-list'>
+            <div>{ loading && <LoaderComponent />}</div>
                 {categories.map((category) => (
                     <li key={category.id} className='category-item'>
                         <span>{category.name}</span>
