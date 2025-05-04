@@ -52,7 +52,7 @@ const RegisterPage = () => {
 
     return (
         <LayoutPage title='Register'>
-          <p>{loading && <LoaderComponent />}</p>
+          <div>{loading && <LoaderComponent />}</div>
           <form onSubmit={handleSubmit} className='register-page'>
              <div className='login-page'>
                <label htmlFor="name">Введіть ім'я користувача:</label>

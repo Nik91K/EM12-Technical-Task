@@ -49,7 +49,7 @@ const TransactionForm = () => {
 
     return (
         <div>
-            <p>{loading && <LoaderComponent />}</p>
+            <div>{loading && <LoaderComponent />}</div>
             <form className='transaction-form' onSubmit={handleSubmit}>
                 <h2>New Transaction</h2>
                 <div className='transaction-group'>

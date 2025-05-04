@@ -11,7 +11,7 @@ const CategoryList = () => {
     return (
         <div className='category-list-main'>
             <h2>Category List</h2>
-            <p>{ loading && <LoaderComponent />}</p>
+            <div>{ loading && <LoaderComponent />}</div>
             <p className="error">{error && error}</p>
             <ul className='category-list'>
                 {categories.map((category) => (

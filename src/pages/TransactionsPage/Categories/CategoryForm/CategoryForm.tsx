@@ -46,7 +46,7 @@ useEffect(() => {
     return (
         <div className='main-category-form'>
             <h2>New Category</h2>
-            <p>{loading && <LoaderComponent />}</p>
+            <div>{loading && <LoaderComponent />}</div>
             <form className='category-form' onSubmit={handleSubmit}>
                 <label htmlFor="category-name">Category Name:</label>
                 <InputComponent 
