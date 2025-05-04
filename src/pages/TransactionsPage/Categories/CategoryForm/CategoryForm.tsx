@@ -9,7 +9,6 @@ import { usePersistedState } from '../../../../hooks/usepersistedState'
 import { getFormInputValueByName } from '../../../../utils/getInput'
 import { useEffect } from 'react'
 import { fetchCategories } from '../../../../api/slices/categorySlice'
-import { fetchTypes } from '../../../../api/slices/typeSlice'
 
 const CategoryForm = () => {
         const [textError, setError] = usePersistedState<string | null>('error', null)

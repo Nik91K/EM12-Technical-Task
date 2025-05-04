@@ -11,8 +11,7 @@ import { loginUser } from '../../../api/slices/authSlice';
 import { useAppDispatch } from '../../../api/hooks';
 
 const LoginPage = () => {
-  const [error, setError] = usePersistedState<string | null>('error', null)
-
+  const [textError, setError] = React.useState<string | null>(null);
   const navigate = useNavigate()
     const [registeredUser] = usePersistedState<UserType>('registeredUser', {
         id: 0,
@@ -64,7 +63,7 @@ const LoginPage = () => {
         navigate('/transactions')
       })
       .catch((error) => {
-        console.log("Помилка реєстації", error)
+        setError("Помилка реєстації")
       })
       
     }
@@ -73,13 +72,13 @@ const LoginPage = () => {
             <form onSubmit={handleSubmit}>
                <div className='login-page'>
                  <label htmlFor="email">Введіть ваш email:</label>
-                 <InputComponent name="email" id="email" type="email" placeholder='example@gmail.com'/>
+                 <InputComponent name="email" id="email"  placeholder='example@gmail.com'/>
                </div>
                <div className='login-page'>
                  <label htmlFor="password">Введіть ваш пароль:</label>
                  <InputComponent name="password" id="password" type="password" minLength={8} maxLength={16}/>
                </div>  
-                {error && <ErrorComponent>{error}</ErrorComponent>}      
+                {textError && <ErrorComponent>{textError}</ErrorComponent>}      
                <SubmitComponent type='submit'/>
             </form>
         </LayoutPage>

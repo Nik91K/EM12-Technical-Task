@@ -1,29 +1,28 @@
-import './SelectComponent.css';
-import { Type } from '../../types/type';
-import React from 'react';
-import { useState } from 'react';
+import './SelectComponent.css'
+import { Type } from '../../types/type'
+import React, { useState } from 'react'
 
-const SelectComponent = ({typeSelect}: {typeSelect:Type[]}) => {
+const SelectComponent = ({ typeSelect, name }: { typeSelect: Type[], name?: string }) => {
     const [selectedType, setSelectedType] = useState<Type | null>(null)
+
     const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectID = Number(event.target.value)
-        const selectF = typeSelect.find(t => t.id == selectID)
-        if (selectF) {
-            setSelectedType(selectF)
-            console.log(selectF)
+        const selectID = Number(event.target.value);
+        const selectedType = typeSelect.find(t => t.id === selectID)
+        if (selectedType) {
+            setSelectedType(selectedType)
         }
     }
+
     return (
-        <select onChange={handleChange}>
+        <select name={name} onChange={handleChange}>
             <option value=''>Оберіть тип</option>
             {typeSelect.map((t) => (
                 <option key={t.id} value={t.id}>
-                {t.name === 'income' ? 'Дохід' : 'Витрата'}
+                    {t.name === 'Income' ? 'Дохід' : 'Витрата'}
                 </option>
-            ))
-            }
+            ))}
         </select>
-    )
+    );
 }
 
-export default SelectComponent
+export default SelectComponent;

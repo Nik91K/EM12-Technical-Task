@@ -1,8 +1,6 @@
 import './CategoryList.css'
 import DeleteComponent from '../../../../components/deleteComponent/DeleteComponent'
-import { useEffect } from 'react'
-import { fetchCategories } from '../../../../api/slices/categorySlice'
-import { useAppSelector, useAppDispatch } from '../../../../api/hooks'
+import { useAppSelector } from '../../../../api/hooks'
 
 
 const CategoryList = () => {

@@ -1,105 +1,80 @@
 import './TransactionForm.css'
 import SubmitComponent from '../../../../components/submitComponent/submitComponent'
 import SelectComponent from '../../../../components/SelectComponent/SelectComponent'
-import { Category } from '../../../../types/categoryTypes'
-import { usePersistedState } from '../../../../hooks/usepersistedState'
-import { TransactionType } from '../../../../types/transactionType'
+import { getFormInputValueByName } from '../../../../utils/getInput'
 import InputComponent from '../../../../components/inputComponent/inputComponent'
-import TransactionList from '../TransactionList/TransactionList'
-import { useState } from 'react'
 import ErrorComponent from '../../../../components/errorComponent/errorComponent'
-import TransactionChart from '../TransactionChart/TransactionChart'
+import React, { useEffect } from 'react'
+import { useAppSelector, useAppDispatch } from '../../../../api/hooks'
+import { fetchCategories } from '../../../../api/slices/categorySlice'
+import { createTransaction } from '../../../../api/slices/transactionSlice'
 
-const TransactionForm = ({ categories }: {categories: Category[]}) => {
-    console.log("Категорії у формі:", categories);
+const TransactionForm = () => {
+    const [textError, setError] = React.useState<string | null>(null)
+    const { categories, loading, error } = useAppSelector((state) => state.category)
+    const dispatch = useAppDispatch()
 
     const typeSelect = [
-        { id: 1, name: 'income' as const },
-        { id: 2, name: 'expense' as const }
-    ]
-    
-    const [transaction, setTransaction] = usePersistedState<TransactionType[]>('transaction', [])
-    const [selectedCategory, setSelectedCategory] = useState('');
-    const [selectedType, setSelectedType] = useState<"income" | "expense">("income");
-    const [value, setValue] = useState(0);
-    const [date, setDate] = useState("");
-    const [error, setError] = useState<string | null>(null);
-    const [totalIncome, setTotalIncome] = useState(0);
-    const [totalExpense, setTotalExpense] = useState(0);
+        { id: 1, name: 'Income' as const },
+        { id: 2, name: 'Expense' as const }
+    ]   
 
-    const handleClick = () => {
-        const category = categories.find(cat => cat.name === selectedCategory);
-        const typeObj = typeSelect.find(t => t.name === selectedType);    
 
-        if (!category || !typeObj || !value || !date) {
-            setError('Заповніть всі поля')
-            return
-        }
+    const handleSubmit = (event:React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
 
-        const newForm: TransactionType = {
-            id: transaction.length + 1,
-            type: typeObj,         
-            value: value,
-            date: date,
-            category: category,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-        }
+    const categoryId = Number(getFormInputValueByName(event.currentTarget, "transaction-type"))
+    const typeId = Number(getFormInputValueByName(event.currentTarget, "type"))
+    const type = typeSelect.find(t => t.id === typeId)?.name
+    const date = getFormInputValueByName(event.currentTarget, 'date')
+    const value = Number(getFormInputValueByName(event.currentTarget, 'value'))
 
-        setTransaction([...transaction, newForm])
-        setSelectedCategory('');
-        setValue(0);
-        setDate('');
-        console.log(newForm)
-        setError('')
-
-        const updatedTransactions = [...transaction, newForm];
-        setTransaction(updatedTransactions);
-            
-        const totalIncome = updatedTransactions
-          .filter(t => t.type.name === 'income')
-          .reduce((acc, curr) => acc + curr.value, 0)
-            
-        const totalExpense = updatedTransactions
-          .filter(t => t.type.name === 'expense')
-          .reduce((acc, curr) => acc + curr.value, 0)
-            
-        setTotalIncome(totalIncome)
-        setTotalExpense(totalExpense)
+    if (!categoryId || !type || !date || !value) {
+      setError('Всі поля повинні бути заповнені')
+      return
     }
 
+    dispatch(createTransaction({ type, categoryId, date, value }))
+      .unwrap()
+      .then((data) => {
+        console.log("Успішно створено:", data)
+        setError(null)
+      })
+      .catch((error) => {
+        console.log("Помилка створення:", error)
+        setError("Сталася помилка при створенні транзакції")
+      })
+    }
 
     return (
         <div>
-            <form className='transaction-form' onSubmit={(e) => e.preventDefault()}>
+            <p>{loading && 'Заавантаження'}</p>
+            <form className='transaction-form' onSubmit={handleSubmit}>
                 <h2>New Transaction</h2>
                 <div className='transaction-group'>
-                    <select name="transaction-type" id="transaction-type" value={selectedCategory} 
-                    onChange={(e) => setSelectedCategory(e.target.value)} required>
-                    <option value="expense"> Оберіть категорію</option>
-                    {categories.map((category) => (
-                        <option key={category.id} value={category.name}>
+                    <select name="transaction-type"  required>
+                        <option value="expense"> Оберіть категорію</option>
+                        {categories.map((category) => (
+                          <option key={category.id} value={category.id}>
                             {category.name}
-                        </option>
-                    ))}
+                          </option>
+                        ))}
                     </select>
                     
-                    <SelectComponent typeSelect={typeSelect} />
+                    <SelectComponent typeSelect={typeSelect} name="type" />
                 </div>
                 <div className='transaction-group'>
-                    <InputComponent type="date" id="date" name="date" placeholder='Дата' onChange={(e) => setDate(e.target.value)}/>
+                    <InputComponent type="date" name="date" placeholder='Дата'/>
                 </div>
                 <div className='transaction-group'>
                     <label htmlFor="value">Value</label>
-                    <InputComponent type="number" id="value" name="value" onChange={(e) => setValue(Number(e.target.value))}/>
+                    <InputComponent type="number" name="value"/>
                 </div>
                 <div>
-                    {error && <ErrorComponent>{error}</ErrorComponent>}
+                    {textError && <ErrorComponent>{textError}</ErrorComponent>}
                 </div>
-                <SubmitComponent type='submit' onClick={handleClick}/>
+                <SubmitComponent type='submit' />
             </form>
-            <TransactionList transaction={transaction} setTransaction={setTransaction}/>
-            <TransactionChart income={totalIncome} expense={totalExpense} />
         </div>
     )
 }
