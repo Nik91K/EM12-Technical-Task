@@ -6,13 +6,15 @@ import InputComponent from '../../../../components/inputComponent/inputComponent
 import ErrorComponent from '../../../../components/errorComponent/errorComponent'
 import React, { useEffect } from 'react'
 import { useAppSelector, useAppDispatch } from '../../../../api/hooks'
-import { fetchCategories } from '../../../../api/slices/categorySlice'
 import { createTransaction } from '../../../../api/slices/transactionSlice'
 import LoaderComponent from '../../../../components/loaderComponent/loaderComponent'
+import TransactionList from '../TransactionList/TransactionList'
+import { fetchTransaction } from '../../../../api/slices/transactionSlice'
 
 const TransactionForm = () => {
     const [textError, setError] = React.useState<string | null>(null)
     const { categories, loading, error } = useAppSelector((state) => state.category)
+    const { transaction } = useAppSelector((state) => state.transaction)
     const dispatch = useAppDispatch()
 
     const typeSelect = [
@@ -22,30 +24,37 @@ const TransactionForm = () => {
 
 
     const handleSubmit = (event:React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
+      event.preventDefault()
 
-    const categoryId = Number(getFormInputValueByName(event.currentTarget, "transaction-type"))
-    const typeId = Number(getFormInputValueByName(event.currentTarget, "type"))
-    const type = typeSelect.find(t => t.id === typeId)?.name
-    const date = getFormInputValueByName(event.currentTarget, 'date')
-    const value = Number(getFormInputValueByName(event.currentTarget, 'value'))
+      const categoryId = Number(getFormInputValueByName(event.currentTarget, "transaction-type"))
+      const typeId = Number(getFormInputValueByName(event.currentTarget, "type"))
+      const type = typeSelect.find(t => t.id === typeId)?.name
+      const date = getFormInputValueByName(event.currentTarget, 'date')
+      const value = Number(getFormInputValueByName(event.currentTarget, 'value'))
 
-    if (!categoryId || !type || !date || !value) {
-      setError('Всі поля повинні бути заповнені')
-      return
+      if (!categoryId || !type || !date || !value) {
+        setError('Всі поля повинні бути заповнені')
+        return
+      }
+
+      dispatch(createTransaction({ type, categoryId, date, value }))
+        .unwrap()
+        .then((data) => {
+          console.log("Успішно створено:", data)
+          setError(null)
+        })
+        .catch((error) => {
+          console.log("Помилка створення:", error)
+          setError("Сталася помилка при створенні транзакції")
+        })
     }
 
-    dispatch(createTransaction({ type, categoryId, date, value }))
-      .unwrap()
-      .then((data) => {
-        console.log("Успішно створено:", data)
-        setError(null)
-      })
-      .catch((error) => {
-        console.log("Помилка створення:", error)
-        setError("Сталася помилка при створенні транзакції")
-      })
-    }
+    useEffect(() => {
+        const token = localStorage.getItem('token')
+        if (token) {
+          dispatch(fetchTransaction())
+        }
+    }, [])
 
     return (
         <div>
@@ -76,6 +85,9 @@ const TransactionForm = () => {
                 </div>
                 <SubmitComponent type='submit' />
             </form>
+            {transaction.length >0 && (
+              <TransactionList />
+            )}
         </div>
     )
 }

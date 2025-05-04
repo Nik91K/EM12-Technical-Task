@@ -24,7 +24,7 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         setError("Введіть данні")
         return
     }
-
+  
     dispatch(createCatagory({name}))
       .unwrap()
       .then((data) => {

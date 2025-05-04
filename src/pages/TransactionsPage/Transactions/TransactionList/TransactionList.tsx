@@ -1,26 +1,24 @@
 import './TransactionList.css'
-// import { usePersistedState } from '../../../../hooks/usepersistedState'
-import { TransactionType } from '../../../../types/transactionType'
+import { useAppSelector } from '../../../../api/hooks'
 import DeleteComponent from '../../../../components/deleteComponent/DeleteComponent'
+import LoaderComponent from '../../../../components/loaderComponent/loaderComponent'
+const TransactionList = () => {
+    const { loading, error, transaction } = useAppSelector((state) => state.transaction)
 
-const TransactionList = ({transaction, setTransaction}: { transaction: TransactionType[], setTransaction: (t: TransactionType[]) => void }) => {
-
-    function handleDelete (id: number){
-        console.log('Транзацкція ІД видалена:', id);
-        setTransaction(transaction.filter((t) => t.id !== id))
-    }
     return (
         <div className="transaction-list">
             <h2>Transaction List</h2>
             <ul>
                 {transaction.map((transaction) => (
                     <li key={transaction.id}>
+                        <p>{loading && <LoaderComponent />}</p>
                         <div>
-                            <span>{transaction.category?.name || 'Не має категорії'}</span>
-                            <span>{transaction.value}</span>
-                            <span>{transaction.date}</span>
+                            <p>{transaction.date}</p>
+                            <p>{transaction.value}</p>
+                            <p>{transaction.type.name}</p> 
+                            <p>{transaction.category.name}</p>       
                         </div>
-                        <DeleteComponent onClick={() => handleDelete(transaction.id)}/>
+                        <DeleteComponent />
                     </li>
                 ))}
             </ul>
