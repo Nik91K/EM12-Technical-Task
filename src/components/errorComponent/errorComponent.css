@@ -1,4 +1,5 @@
 .error-component{
+    margin: 10px;
     border: 1px solid red;
     background-color: #f8d7da;
     display: flex;

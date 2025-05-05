@@ -10,7 +10,7 @@ const FooterMain = () => {
         <footer className="footer-main">
             <div className='footer-content'>
                 <p>@2025 Technical Task. All Reghts Reserved.</p>
-                <a href="" className='footer-link'>Terms & Conditions</a>
+                <a href="" className='link'>Terms & Conditions</a>
             </div>
             <div className="footer-icons">
                 <FaReddit className='footer-icon'/>  

@@ -1,0 +1,9 @@
+.login-page-icon{
+    display: flex;
+    align-items: center;
+}
+
+.login-icon{
+    width: 24px;
+    height: 24px;
+}

@@ -1,0 +1,14 @@
+.login-page{
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+    padding: 5px;
+    text-align: left;
+}
+
+.login-label{
+    font-size: 15px;
+    text-align: left;
+    padding: 2px;
+}
+

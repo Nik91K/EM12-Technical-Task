@@ -9,6 +9,8 @@ import { useNavigate } from 'react-router-dom';
 import ErrorComponent from '../../../components/errorComponent/errorComponent';
 import { loginUser } from '../../../api/slices/authSlice';
 import { useAppDispatch } from '../../../api/hooks';
+import { RiLockPasswordLine } from 'react-icons/ri';
+import { MdEmail } from 'react-icons/md';
 
 const LoginPage = () => {
   const [textError, setError] = React.useState<string | null>(null);
@@ -70,17 +72,21 @@ const LoginPage = () => {
     return (
         <LayoutPage title='login'>
             <form onSubmit={handleSubmit}>
-               <div className='login-page'>
-                 <label htmlFor="email">Введіть ваш email:</label>
-                 <InputComponent name="email" id="email"  placeholder='example@gmail.com'/>
+              <div className='login-page-icon'>
+                <MdEmail className='login-icon' />
+                <InputComponent name="email" placeholder='Введіть ваш email:'/>
                </div>
                <div className='login-page'>
-                 <label htmlFor="password">Введіть ваш пароль:</label>
-                 <InputComponent name="password" id="password" type="password" minLength={8} maxLength={16}/>
+                <label htmlFor="password" className='login-label'>Password:</label>
+                <div className='login-page-icon'>
+                  <RiLockPasswordLine className='login-icon' />
+                  <InputComponent name="password" type="password" placeholder='Введіть ваш пароль:'/>
+                </div>
                </div>  
                 {textError && <ErrorComponent>{textError}</ErrorComponent>}      
                <SubmitComponent type='submit'/>
             </form>
+            <p>Don't have an account? <a href="/register" className='link'>Register!</a></p>
         </LayoutPage>
     )
 }

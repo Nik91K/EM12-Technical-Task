@@ -9,6 +9,9 @@ import { registerUser } from '../../../api/slices/authSlice';
 import { getFormInputValueByName } from '../../../utils/getInput';
 import React from 'react';
 import LoaderComponent from '../../../components/loaderComponent/loaderComponent';
+import { RiLockPasswordLine } from "react-icons/ri";
+import { MdEmail } from "react-icons/md";
+import { CiUser } from "react-icons/ci";
 
 const RegisterPage = () => {
   const [textError, setError] = React.useState<string | null>(null)
@@ -20,16 +23,22 @@ const RegisterPage = () => {
       let name = getFormInputValueByName(event.currentTarget, "name")
       let email = getFormInputValueByName(event.currentTarget, "email")
       let password = getFormInputValueByName(event.currentTarget, "password")
-      // const { name, email, password } = userData
-      
+
       if (!email || !password || !name) {
         setError('Заповніть всі поля')
         return
       }  
+      
+      if (name.length < 2) {
+        setError('Username повинен бути більше 2 симовлів')
+        return
+      }
+
       if (!email.includes("@") || !email.includes(".")) {
         setError("Email повинен мати @ та .")
         return
-      } 
+      }
+
       if (email.length < 5 || email.length > 30) {
         setError('Емайл повинен бути менше 5 та більше 30 символів')
         return
@@ -39,6 +48,7 @@ const RegisterPage = () => {
         setError('Пароль повинен бути від 8 до 16 символів')
         return
       }
+
       dispatch(registerUser({ email, password, name}))
         .unwrap()
         .then((data) => {
@@ -46,7 +56,7 @@ const RegisterPage = () => {
           navigate('/transactions')
         })
         .catch((error) => {
-          console.log("Помилка реєстації", error)
+          setError("Помилка реєстації")
         })
     }
 
@@ -55,16 +65,25 @@ const RegisterPage = () => {
           <div>{loading && <LoaderComponent />}</div>
           <form onSubmit={handleSubmit} className='register-page'>
              <div className='login-page'>
-               <label htmlFor="name">Введіть ім'я користувача:</label>
-               <InputComponent name="name" type="text" minLength={2}/>
+               <label htmlFor="name">Username:</label>
+               <div className='login-page-icon'>
+                <CiUser className='login-icon' />
+                <InputComponent name="name" type="text" placeholder="Введіть ім'я користувача"/>
+               </div>             
              </div>
              <div className='login-page'>
-               <label htmlFor="email">Введіть ваш email:</label>
-               <InputComponent name="email" placeholder='example@gmail.com'/>
+               <label htmlFor="email">Email:</label>
+               <div className='login-page-icon'>
+                <MdEmail className='login-icon' />
+                <InputComponent name="email" placeholder='Введіть ваш email:'/>
+               </div>
              </div>
              <div className='login-page'>
-               <label htmlFor="password">Введіть ваш пароль:</label>
-               <InputComponent name="password" type="password"/>
+               <label htmlFor="password">Password:</label>
+               <div className='login-page-icon'>
+                <RiLockPasswordLine className='login-icon' />
+                <InputComponent name="password" type="password" placeholder='Введіть ваш пароль:'/>
+               </div>
              </div>        
               {textError && <ErrorComponent>{textError}</ErrorComponent>}
              <SubmitComponent type='submit' />
