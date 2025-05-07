@@ -1,9 +1,15 @@
+import React from 'react'
 import './DeleteComponent.css'
 
-const DeleteComponent = ({ onClick }: {onClick?: () => void}) => {
+const DeleteComponent = ({ onClick, id }: {onClick: (e: React.MouseEvent<HTMLButtonElement>, id: number) => void, id:number}) => {
     return (
-        <button className='delete-button' onClick={onClick}>X</button>
-    )
-}
+        <button
+            className='delete-button'
+            onClick={(e) => onClick(e, id)}
+        >
+            X
+        </button>
+    );
+};
 
-export default DeleteComponent
+export default DeleteComponent;
