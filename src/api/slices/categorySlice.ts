@@ -44,7 +44,7 @@ export const deleteCategory = createAsyncThunk(
   'category/delete',
   async (categoryId: number, { rejectWithValue }) => {
     try {
-      const response = await axios.delete(`/{SLICE_URL}/${categoryId}`)
+      const response = await axios.delete(`/${SLICE_URL}/${categoryId}`)
       return response.data
     } catch (error: any) {
       return rejectWithValue(error.response.data)
@@ -89,11 +89,12 @@ const categorySlice = createSlice({
       state.loading = true
       state.error = null
     })
-    .addCase(deleteCategory.rejected,  (state, action) => {
-      state.loading = false
-      state.categories = state.categories.filter((category) => category.id !== action.payload)
-    })
     .addCase(deleteCategory.fulfilled, (state, action) => {
+      state.loading = false
+      const data = action.payload as {id:number}
+      state.categories = state.categories.filter((category) => category.id !== data.id)
+    })
+    .addCase(deleteCategory.rejected, (state, action) => {
       state.loading = false
       state.error = action.payload as string
     })
