@@ -18,7 +18,7 @@ const TransactionList = () => {
                             <p>{transaction.type.name}</p> 
                             <p>{transaction.category.name}</p>       
                         </div>
-                        <DeleteComponent />
+                        {/* <DeleteComponent /> */}
                     </li>
                 ))}
             </ul>

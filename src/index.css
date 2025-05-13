@@ -38,3 +38,14 @@ body {
   display: flex;
   justify-content: center;
 }
+
+.link{
+  color: rgb(195, 195, 195);
+  transition: 0.5s ease;
+}
+
+.link:hover{
+  color: #fff;
+  border-bottom: 1px solid #fff;
+  transition: 0.5s ease;
+}
